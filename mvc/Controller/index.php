@@ -1,9 +1,9 @@
 <?php
 //Show Header 
-include './view/header.php';
+include './views/header.php';
 
 //Database
-include './model/connectdb.php';
+include './models/connectdb.php';
 
 //Show Content
 if (!isset($_GET['page'])) {
