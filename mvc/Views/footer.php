@@ -18,7 +18,6 @@
 		<div class="footer_inner_info_w3ls_agileits">
 			<div class="col-md-3 footer-left">
 				<h2><a href="index.html"><span>D</span>owny Shoes </a></h2>
-				<p>Lorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p>
 				<ul class="social-nav model-3d-0 footer-social social two">
 					<li>
 						<a href="#" class="facebook">
