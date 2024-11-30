@@ -1,0 +1,58 @@
+:root {
+    --color-primary: #5ec576;
+    --color-primary-hover: #39b385;
+    --color-secondary: #ffcb03;
+    --color-tertiary: #ff585f;
+    --color-primary-opacity: #5ec5763a;
+    --color-secondary-opacity: #ffcb0331;
+    --color-tertiary-opacity: #ff585f2d;
+    --gradient-primary: linear-gradient(to top left, #39b385, #9be15b);
+    --gradient-secondary: linear-gradient(to top left, #ffb003, #ffcb03);
+    --border-card: var(--bs-card-border-color);
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* Số dòng hiển thị */
+    -webkit-box-orient: vertical;
+}
+
+.scroll-container {
+    user-select: none;
+    display: flex;
+    /* Sử dụng Flexbox */
+    overflow-x: auto;
+    /* Kích hoạt cuộn ngang */
+    gap: 10px;
+    /* Khoảng cách giữa các phần tử */
+    padding: 10px;
+    border-radius: 8px;
+    scroll-behavior: smooth;
+    /* Cuộn mượt */
+}
+
+.scroll-container::-webkit-scrollbar {
+    height: 0px;
+    /* Chiều cao của thanh cuộn */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+.item {
+    min-width: 150px;
+    /* Màu xanh theo yêu cầu */
+    text-align: center;
+    flex-shrink: 0;
+    /* Không co lại */
+}
