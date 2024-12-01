@@ -1,3 +1,32 @@
+<?php
+include '../model/connectdb.php';
+// INSERT INTO `admins` (`id`, `name`, `password`) VALUES (NULL, 'KhacHung', SHA1('111'));
+session_start();
+if(isset($_POST['submit'])){
+   $name = $_POST['name'];
+   $pass = sha1($_POST['pass']);
+   $select_admin = $conn->prepare("SELECT * FROM `admins` WHERE name = ? AND password = ?");
+   $select_admin->execute([$name, $pass]);
+   $row = $select_admin->fetch(PDO::FETCH_ASSOC);
+   if($select_admin->rowCount() > 0){
+      $_SESSION['admin_id'] = $row['id'];
+      $_SESSION['admin_name'] = $row['name'];
+      header('location: ../index.php');
+      exit();
+   }else{
+    $select_username = $conn->prepare("SELECT * FROM `admins` WHERE name = ?");
+    $select_username->execute([$name]);
+    $username = $select_username->fetch(PDO::FETCH_ASSOC);
+    if ($username) {
+        // Kiểm tra mật khẩu nếu tên đăng nhập tồn tại
+            $message[] = 'Mật khẩu không đúng!';
+    } else {
+        $message[] = 'Tên đăng nhập không tồn tại!';
+    }
+   }
+}
+?>
+
 <main>
     <div class="login-container">
         <form class="login-form">

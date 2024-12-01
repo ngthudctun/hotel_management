@@ -4,7 +4,7 @@
 <?php
 class DB
 {
-    private $dsn = 'mysql:host=localhost;dbname=englishvocabularydb;charset=UTF8';
+    private $dsn = 'mysql:host=localhost;dbname=hotel_management;charset=UTF8';
     private $username = 'root';
     private $password = '';
     private $conn;
