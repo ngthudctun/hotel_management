@@ -62,7 +62,7 @@
                 <a class="link-offset-2 link-underline link-underline-opacity-0 text-danger fw-bold" href="#">Điều
                     khoản và dịch vụ</a>
             </div>
-            <div class="mt-3 border border-secondary-subtle rounded p-3">
+            <!-- <div class="mt-3 border border-secondary-subtle rounded p-3">
                 <h5>Hoạt động không thể bỏ qua ở Hồ Chí Minh</h5>
                 <div class="card mb-3">
                     <div class="row g-0">
@@ -121,20 +121,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="col-6 col-md-4">
             <div class="card ms-3 position-sticky" style="top: 10px;">
                 <div class="card-body">
                     <div class="d-flex">
-                        <span class="fs-5 fw-bold">Tổng giá</span>
+                        <span class="fs-5 fw-bold">Tổng giá (<?php echo $getData->countRoomByHotel($_GET['hotel'])[0]['cnt'] ?>)</span>
                         <span
-                            class="text-danger fw-bolder fs-5 text-end ms-auto"><?php echo $getRoomHotel[0]['price'] ?>
-                            VND</span>
+                            class="text-danger fw-bolder fs-5 text-end ms-auto">
+                            <?php echo $getData->countRoomByHotel($_GET['hotel'])[0]['total_price'] ?> VND</span>
                     </div>
                     <div style="font-size: 10px;">Đã bao gồm thuế và phí</div>
-                    <a href="#"><button class="btn btn-primary w-100 mt-3">Đặt ngay
-                        </button></a>
+                    <!-- <a href="#"><button class="btn btn-primary w-100 mt-3">Đặt ngay</button></a> -->
                 </div>
             </div>
         </div>

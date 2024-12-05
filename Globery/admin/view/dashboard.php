@@ -1,3 +1,6 @@
+<?php
+$booking = $admin_db->sortedByTime();
+?>
 <!-- Main content -->
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
     <div
@@ -14,7 +17,7 @@
             <div class="card bg-primary text-white shadow">
                 <div class="card-header">Hotel</div>
                 <div class="card-body pb-0">
-                    <span>Tổng số: <?php echo ($countHotel[0]['cnt']) ?></span>
+                    <span>Tổng số: <?php echo ($admin_db->count('hotel')[0]['cnt']); ?></span>
                     <span class="badge bg-light text-dark">+5%</span>
                 </div>
                 <div class="card-body pt-0">
@@ -26,7 +29,7 @@
             <div class="card bg-success text-white shadow">
                 <div class="card-header">Tổng phòng</div>
                 <div class="card-body pb-0">
-                    <span>Tổng số: <?php echo ($countRoom[0]['cnt']) ?></span>
+                    <span>Tổng số: <?php echo ($admin_db->count('room')[0]['cnt']); ?></span>
                     <span class="badge bg-light text-dark">+2%</span>
                 </div>
                 <div class="card-body pt-0">
@@ -38,7 +41,7 @@
             <div class="card bg-warning text-white shadow">
                 <div class="card-header">Người dùng</div>
                 <div class="card-body pb-0">
-                    <span>Đăng ký: <?php echo ($countCustomer[0]['cnt']) ?></span>
+                    <span>Đăng ký: <?php echo ($admin_db->count('customer')[0]['cnt']); ?></span>
                     <span class="badge bg-light text-dark">+8%</span>
                 </div>
                 <div class="card-body pt-0">
@@ -50,60 +53,60 @@
             <div class="card bg-danger text-white shadow">
                 <div class="card-header">Thống kê</div>
                 <div class="card-body pb-0">
-                    <span>Lượt xem: 7890</span>
+                    <span>Lượt đặt: <?php echo ($admin_db->count('booking')[0]['cnt']); ?></span>
                     <span class="badge bg-light text-dark">+3%</span>
                 </div>
                 <div class="card-body pt-0">
-                    <a href="./?page=hotel" class="px-0 text-light">Xem chi tiết</a>
+                    <a href="./?page=orders" class="px-0 text-light">Xem chi tiết</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Data Table with Search Bar -->
-    <h2 class="mb-3">Danh sách sản phẩm</h2>
-    <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm...">
-    </div>
+    <h2 class="mb-3">Danh sách phòng đang hoạt động</h2>
     <div class="table-responsive">
         <table class="table table-striped table-sm">
             <thead class="table-dark">
                 <tr>
                     <th>#</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Danh mục</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
+                    <th>Người đặt</th>
+                    <th>Mã phòng</th>
+                    <th>Yêu cầu</th>
+                    <th>Ngày nhận phòng</th>
+                    <th>Ngày trả phòng</th>
+                    <th>Tổng giá</th>
+                    <th>Ngày tạo</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Sản phẩm A</td>
-                    <td>Danh mục 1</td>
-                    <td>$100</td>
-                    <td>50</td>
-                    <td><span class="badge bg-success">Đang bán</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-warning">Sửa</button>
-                        <button class="btn btn-sm btn-danger">Xóa</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Sản phẩm B</td>
-                    <td>Danh mục 2</td>
-                    <td>$150</td>
-                    <td>20</td>
-                    <td><span class="badge bg-secondary">Hết hàng</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-warning">Sửa</button>
-                        <button class="btn btn-sm btn-danger">Xóa</button>
-                    </td>
-                </tr>
-                <!-- Thêm sản phẩm tùy ý -->
+            <tbody id="booking">
+                <?php $i = 0; foreach ($booking as $row): ?>
+                    <tr>
+                        <td><?php echo ++$i ?></td>
+                        <td><?php echo $row['name'] ?></td>
+                        <td><?php echo $row['id_room'] ?></td>
+                        <td><?php echo $row['request'] ?></td>
+                        <td><?php echo $admin_db->formatDate($row['start_date']); ?></td>
+                        <td><?php echo $admin_db->formatDate($row['end_date']); ?></td>
+                        <td><?php echo $row['total_price'] ?></td>
+                        <td><?php echo $admin_db->formatDate($row['create_at']); ?></td>
+                        <td>
+                            <?php if ($admin_db->checkDate($row['start_date'], $row['end_date']) == 'coming soon') { ?>
+                                <span class="badge bg-danger">Sắp tới</span>
+                            <?php } elseif ($admin_db->checkDate($row['start_date'], $row['end_date']) == 'active') { ?>
+                                <span class="badge bg-primary">Đang hoạt động</span>
+                            <?php } else { ?>
+                                <span class="badge bg-success">Đã trả phòng</span>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" disabled>Sửa</button>
+                            <button class="btn btn-sm btn-danger" disabled>Xóa</button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>

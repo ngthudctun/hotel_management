@@ -1,3 +1,12 @@
+<?php 
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['search'])){
+    $getHotel = $getData->searchHotel($_POST['searchBy'], $_POST['searchName']);
+}else{
+    $getHotel = $getData->getHotel();
+}
+$getRoom = $getData->getRoom(); 
+?>
+
 <!-- Form -->
 <div class="content m-0 position-relative"
     style="background-image: url(./mvc/view/img/banner.jpeg); min-height: 300px; ">
@@ -71,89 +80,152 @@
     </button>
 </div>
 <!-- End Slishow  -->
-<!-- Hotel -->
-<?php foreach ($getHotel as $row): ?>
-    <div class="mt-5 rounded-5 container">
-        <h3><?php echo $row['name']; ?></h3>
-        <div class="row mt-3">
-            <div class="col-4">
-                <div class="shadow rounded-5 p-3 h-100">
-                    <div class="rounded-5 overflow-hidden">
-                        <img src="./mvc/view/img/<?php echo $row['image_hotel']; ?>" alt="" width="100%">
-                    </div>
-                    <div class=" my-3 fw-bold">
-                        <span><i class="fa-solid fa-phone"></i></span>
-                        <span><?php echo $row['tel']; ?></span>
-                    </div>
-                    <div class="my-3 fw-bold">
-                        <span><i class="fa-solid fa-location-dot"></i></span>
-                        <span><?php echo $row['address'] ?></span>
-                    </div>
-                    <div class="my-3 fw-bold">
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><?php echo $row['average_rating'] ?></span>
-                    </div>
-                    <div class="my-3 fw-bold">
-                        <span><i class="fa-solid fa-id-card-clip"></i></span>
-                        <span><?php echo $row['total_room'] ?></span>
-                    </div>
-                    <div class="my-3 fw-bold">
-                        <span><i class="fa-solid fa-ranking-star"></i></span>
-                        <span><?php echo $row['review'] ?></span>
-                    </div>
-                    <div class="fs-5 my-3 fw-bold">
-                        <span><i class="fa-solid fa-clipboard"></i></span>
-                        <span><?php echo $row['description'] ?></span>
+
+<div class="container my-3">
+
+
+    <form action="" method="post" class="mb-3 shadow p-5 rounded">
+        <h3>Tìm kiếm khách sạn</h3>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputSelect">Tìm kiếm theo</label>
+            <select class="form-select ms-3" id="inputSelect" name="searchBy">
+                <option selected>Choose...</option>
+                <option value="name">Khách sạn</option>
+                <option value="address">Vị trí</option>
+            </select>
+        </div>
+        <div class="input-group mb-3 d-flex align-items-center">
+            <input type="text" class="form-control" name="searchName" placeholder="Tìm kiếm ở đây">
+            <button class="btn btn-outline-secondary border border-secondary-subtle m-0" type="submit" name="search">Tìm
+                kiếm</button>
+        </div>
+    </form>
+</div>
+
+<div class="container text-center mt-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        <?php foreach ($getHotel as $row): ?>
+            <div class="col">
+                <div class="card">
+                    <img src="./mvc/view/img/<?php echo $row['image_hotel'] ?>" class="card-img-top" alt="..."
+                        style="height: 200px !important; object-fit: cover;">
+                    <a class="mini"><?php echo $row['address'] ?></a>
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <!-- Đưa tiêu đề về bên trái -->
+                        <h5 class="card-title text-start"><?php echo $row['name'] ?></h5>
+
+                        <!-- Nút và icon nằm trên cùng một dòng -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Nút bên trái -->
+                            <div>
+                            <a href="./?page=hoteldetails&hotel=<?php echo $row['id_hotel'] ?>" class="btn btn-primary">Đặt phòng ngay</a>
+                            </div>
+                            <!-- Icon và rating nằm bên phải -->
+                            <div class="btn d-flex align-items-center">
+                                <span><?php echo $row['average_rating'] ?></span>
+                                <i class="fa-solid fa-star text-warning"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
-        <!-- table -->
+        <?php endforeach ?>
 
-        <div class="col-8 shadow rounded-5 ">
-            <div class="p-3 h-100">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Lựa chọn phòng</th>
-                            <th scope="col">Khách</th>
-                            <th scope="col" colspan="2">Giá/Phòng/Đêm</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        <?php foreach ($getRoom as $row): ?>
-                            <tr>
-                                <td>
-                                    <div style="width: 100%; max-width:20rem;">
-                                        <img src="./mvc/view/img/<?php echo $row['image_room'] ?>" alt="" style="width: 100%;">
-                                    </div>
-                                    <div class="fs-5 my-3">
-                                        <span><i class="fa-solid fa-arrows-left-right"></i></span>
-                                        <span>Rộng <?php echo $row['capacity'] ?>m²</span>
-                                    </div>
-                                    <div class="fs-5 my-3">
+    </div>
+</div>
+<!-- End Product  -->
+<!-- Hotel -->
+<?php foreach ($getHotel as $row): ?>
+    <div class="mt-5 rounded-5 container">
+        <div class="row mt-3">
+            <div class="col-4">
+                <div class="shadow rounded-5 p-3 h-100">
+                    <div class="rounded overflow-hidden mt-3">
+                        <img src="./mvc/view/img/<?php echo $row['image_hotel']; ?>" alt="" width="100%">
+                    </div>
+                    <h3 class="my-3 text-center"><?php echo $row['name']; ?></h3>
+                    <div class=" my-3">
+                        <span><i class="fa-solid fa-phone"></i></span>
+                        <span><?php echo $row['tel']; ?></span>
+                    </div>
+                    <div class="my-3">
+                        <span><i class="fa-solid fa-location-dot"></i></span>
+                        <span><?php echo $row['address'] ?></span>
+                    </div>
+                    <div class="my-3">
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><?php echo $row['average_rating'] ?></span>
+                    </div>
+                    <div class="my-3">
+                        <span><i class="fa-solid fa-id-card-clip"></i></span>
+                        <span><?php echo $row['total_room'] ?> phòng</span>
+                    </div>
+                    <div class="my-3">
+                        <span><i class="fa-solid fa-ranking-star"></i></span>
+                        <span><?php echo $row['review'] ?></span>
+                    </div>
+                    <div class="fs-5 my-3">
                         <span><i class="fa-solid fa-clipboard"></i></span>
                         <span><?php echo $row['description'] ?></span>
                     </div>
-                                </td>
-                                <td>
-                                    <i class="fa-solid fa-user"></i></td>
-                                <td class="d-flex flex-column">
-                                    <!-- <button class="btn btn-success rounded-pill">+ COUPON 11.11</button> -->
-                                    <del class="text-body-secondary"><?php echo $row['price'] + 400; ?>VNĐ</del>
-                                    <span class="text-danger fw-bolder fs-5"><?php echo $row['price'] ?>VNĐ</span>
-                                    <span class="text-body-secondary">Chưa bao gồm thuế và phí</span>
-                                    <button class="btn btn-danger rounded-pill">
-                                        <a href="./?page=roomdetails&room=<?php echo $row['id_room'] ?>"
-                                            class="text-decoration-none text-light">Đặt
-                                            ngay</a></button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    <div class="fs-5 my-3">
+                        <a href="./?page=hoteldetails&hotel=<?php echo $row['id_hotel'] ?>" class="btn btn-primary">Đặt
+                            phòng ngay</a>
+                    </div>
+
+                </div>
             </div>
-        </div>
+
+            <!-- table -->
+            <div class="col-8 shadow rounded-5 ">
+                <div class="p-3 h-100">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Lựa chọn phòng</th>
+                                <th scope="col">Khách</th>
+                                <th scope="col" colspan="2">Giá/Phòng/Đêm</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+
+                            <?php
+                            $getHotelRoom = $getData->getHotelRoom($row['id_hotel']);
+                            foreach ($getHotelRoom as $room): ?>
+                                <tr>
+                                    <td>
+                                        <div class="rounded overflow-hidden" style="width: 100%; max-width:20rem;">
+                                            <img src="./mvc/view/img/<?php echo $room['image_room'] ?>" alt=""
+                                                style="width: 100%;">
+                                        </div>
+                                        <div class="fs-5 my-3">
+                                            <span><i class="fa-solid fa-arrows-left-right"></i></span>
+                                            <span>Diện tích <?php echo $room['capacity'] ?>m²</span>
+                                        </div>
+                                        <div class="fs-5 my-3">
+                                            <span><i class="fa-solid fa-clipboard"></i></span>
+                                            <span><?php echo $room['description'] ?></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="fa-solid fa-user"></i>
+                                    </td>
+                                    <td class="d-flex flex-column">
+                                        <!-- <button class="btn btn-success rounded-pill">+ COUPON 11.11</button> -->
+                                        <del class="text-body-secondary"><?php echo $room['price'] + 400; ?>VNĐ</del>
+                                        <span class="text-danger fw-bolder fs-5"><?php echo $room['price'] ?>VNĐ</span>
+                                        <span class="text-body-secondary">Chưa bao gồm thuế và phí</span>
+                                        <button class="btn btn-primary">
+                                            <a href="./?page=checkout&room=<?php echo $room['id_room'] ?>"
+                                                class="text-decoration-none text-light">Đặt ngay</a></button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
@@ -162,47 +234,6 @@
 <div class="title">
     <h2 class="container text-right mt-5">TOP CÁC KHÁCH SẠN ĐƯỢC ĐƯỢC YÊU THÍCH</h2>
 </div>
-<div class="button">
-    <!-- <div class="container text-center my-4">
-        <div class="d-flex gap-3  flex-wrap">
-            <button type="button" class="btn btn-outline-success btn-sm rounded-pill">Việt Nam</button>
-            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill">Thái Lan</button>
-            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill">Hàn Quốc</button>
-            <button type="button" class="btn btn-outline-warning btn-sm rounded-pill">Nhật Bản</button>
-            <button type="button" class="btn btn-outline-info btn-sm rounded-pill">Malaysia</button>
-        </div>
-    </div> -->
-</div>
-<div class="container text-center mt-3">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <?php foreach($getHotel as $row): ?>
-        <div class="col">
-            <div class="card">
-                <img src="./mvc/view/img/<?php echo $row['image_hotel'] ?>" class="card-img-top" alt="...">
-                <a class="mini"><?php echo $row['address'] ?></a>
-                <div class="card-body">
-                    <!-- Đưa tiêu đề về bên trái -->
-                    <h5 class="card-title text-start"><?php echo $row['name'] ?></h5>
-
-                    <!-- Nút và icon nằm trên cùng một dòng -->
-                    <div class="d-flex justify-content-between align-items-center">
-                        <!-- Nút bên trái -->
-                        <a href="./?page=hoteldetails&hotel=<?php echo $row['id_hotel'] ?>" class="btn btn-primary">Đặt Tour Ngay</a>
-                        <!-- Icon và rating nằm bên phải -->
-                        <a href="#" class="btn btn-link d-flex align-items-center">
-                            <span><?php echo $row['average_rating'] ?></span>
-                            <i class="fa-solid fa-star text-warning"></i>
-                            <!-- Thêm icon ở đây (Font Awesome) -->
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-<?php endforeach ?>
-       
-    </div>
-</div>
-<!-- End Product  -->
 
 <!-- Voucher  -->
 <div class="product">
