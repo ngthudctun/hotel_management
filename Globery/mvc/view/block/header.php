@@ -1,3 +1,9 @@
+<?php
+if (isset($_POST['unsetUser'])) {
+    unset($_SESSION['user_name']);
+    $user = null;
+}
+?>
 <!DOCTYPE html>
 <html lang="en" class="sr">
 
@@ -67,12 +73,6 @@
                     <a href="./index.php?page=cart"><i class="fa-solid fa-cart-shopping"></i></a>
                     <?php if (isset($user)) {
                         echo '
-                        
-                            <a href="./">
-                                <button type="submit" name="unsetUser" class="btn btn-secondary" data-bs-container="body"
-                                    data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Bottom popover"></button>
-                            </a>
-                        
                         <form action="" method="post">
                         <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,9 +80,9 @@
                             $user . '
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="#" name="unsetUser">Đăng xuất</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
+    <li><form action="" method="post">
+                            <button type="submit" class="dropdown-item" name="unsetUser">Đăng xuất</button>
+                        </form></li>
   </ul>
 </div>
 </form>
@@ -95,15 +95,12 @@
                         <a href="./index.php?page=register">
                             <button class="btn-signup btn btn btn-outline-primary rounded-pill ">Đăng Kí</button>
                         </a>
+
                     <?php } ?>
+                    <a href="./admin">
+                            <button class="btn-signup btn btn btn-outline-primary rounded-pill ">Vào trang quản trị</button>
+                        </a>
                 </div>
             </div>
         </div>
     </nav>
-
-    <?php
-    if (isset($_POST['unsetUser'])) {
-        unset($_SESSION['user_name']);
-        $user = null;
-    }
-    ?>

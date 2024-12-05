@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     <form action="./?page=users" method="post" class="mb-3">
         <div class="input-group mb-3">
             <input type="text" class="form-control" name="name" placeholder="Nhập tên người dùng">
-            <button class="btn btn-outline-secondary" type="submit" name="search">Tìm kiếm</button>
+            <button class="btn btn-outline-secondary border border-secondary-subtle" type="submit" name="search">Tìm
+                kiếm</button>
         </div>
     </form>
     <div class="table-responsive">

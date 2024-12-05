@@ -1,3 +1,8 @@
+<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    unset($_SESSION['admin_id']);
+    $admin_id = null;
+    header('location: ./');
+} ?>
 <!DOCTYPE html>
 <html lang="en" class="sr">
 
@@ -25,11 +30,13 @@
         #sidebar .nav-link:hover {
             background-color: #495057;
             color: white;
+            border-radius: 50px 0px 0px 50px;
         }
 
-        #sidebar .nav-link.active {
-            background-color: #495057;
-            color: white;
+        #sidebar .nav-link.actived {
+            background-color: #495057 !important;
+            color: white !important;
+            border-radius: 50px 0px 0px 50px;
         }
 
         /* Tùy chỉnh stats card */
@@ -67,39 +74,63 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar p-0">
                 <div class="position-sticky pt-3">
                     <h3 class="text-center mt-3">Admin Dashboard</h3>
                     <ul class="nav flex-column mt-4">
                         <li class="nav-item">
-                            <a class="nav-link <?php if ($actived == 'dashboard') {
-                                echo 'active';
+                            <a class="nav-link d-flex align-items-center mt-1 gap-3 <?php if ($actived == 'dashboard') {
+                                echo 'actived';
                             } ?>" href="./?page=dashboard">
                                 <span data-feather="home"></span>
                                 Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php if ($actived == 'hotel') {
-                                echo 'active';
-                            } ?>"" href="./?page=hotel">
+                            <a class="nav-link d-flex align-items-center mt-1 gap-3 <?php if ($actived == 'hotel') {
+                                echo 'actived';
+                            } ?>" href="./?page=hotel">
                                 <span data-feather="file"></span>
                                 Quản lý khách sạn
                             </a>
                         </li>
-                        <li class="nav-item <?php if ($actived == 'orders') {
-                            echo 'active';} ?>">
-                            <a class="nav-link" href="./?page=orders">
+                        <li class="nav-item ">
+                            <a class="nav-link d-flex align-items-center mt-1 gap-3 <?php if ($actived == 'room') {
+                                echo 'actived';
+                            } ?>" href="./?page=room">
+                                <span data-feather="archive"></span>
+                                Quản lý phòng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center mt-1 gap-3  <?php if ($actived == 'orders') {
+                                echo 'actived';
+                            } ?>" href="./?page=orders">
                                 <span data-feather="shopping-cart"></span>
                                 Đặt phòng
                             </a>
                         </li>
-                        <li class="nav-item <?php if ($actived == 'users') {
-                            echo 'active';} ?>">
-                            <a class="nav-link" href="./?page=users">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center mt-1 gap-3  <?php if ($actived == 'banner_display') {
+                                echo 'actived';
+                            } ?>" href="./?page=banner_display">
+                                <span data-feather="airplay"></span>
+                                Banner
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center mt-1 gap-3 <?php if ($actived == 'users') {
+                                echo 'actived';
+                            } ?>" href="./?page=users">
                                 <span data-feather="users"></span>
                                 Người dùng
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="" method="post" class="w-100">
+                                <button class="nav-link d-flex align-items-center mt-1 gap-3 w-100" type="submit" name="logout" value="Đăng xuất"><span
+                                        data-feather="log-out"></span> Đăng xuất</button>
+                            </form>
                         </li>
                     </ul>
                 </div>

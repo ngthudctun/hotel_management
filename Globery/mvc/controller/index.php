@@ -59,10 +59,6 @@ if (!isset($_GET['page'])) {
          break;
 
       case 'roomdetails':
-         
-         if(isset($_GET['room'])){
-            $getRoomHotel = $getData->getRoomHotel($_GET['room']);
-         }
          $actived = 'roomdetails';
          include './mvc/view/roomdetails.php';
          break;
@@ -72,6 +68,13 @@ if (!isset($_GET['page'])) {
          }
          $actived = 'hoteldetails';
          include './mvc/view/hoteldetails.php';
+         break;
+      case 'historybooking':
+         if(isset($_GET['hotel'])){
+            $getRoomHotel = $getData->getHotelRoom($_GET['hotel']);
+         }
+         $actived = 'historybooking';
+         include './mvc/view/historybooking.php';
          break;
 
       default:

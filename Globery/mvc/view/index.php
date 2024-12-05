@@ -71,6 +71,37 @@
     </button>
 </div>
 <!-- End Slishow  -->
+<div class="container text-center mt-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        <?php foreach ($getHotel as $row): ?>
+            <div class="col">
+                <div class="card">
+                    <img src="./mvc/view/img/<?php echo $row['image_hotel'] ?>" class="card-img-top" alt="...">
+                    <a class="mini"><?php echo $row['address'] ?></a>
+                    <div class="card-body">
+                        <!-- Đưa tiêu đề về bên trái -->
+                        <h5 class="card-title text-start"><?php echo $row['name'] ?></h5>
+
+                        <!-- Nút và icon nằm trên cùng một dòng -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Nút bên trái -->
+                            <a href="./?page=hoteldetails&hotel=<?php echo $row['id_hotel'] ?>" class="btn btn-primary">Đặt
+                                Tour Ngay</a>
+                            <!-- Icon và rating nằm bên phải -->
+                            <a href="#" class="btn btn-link d-flex align-items-center">
+                                <span><?php echo $row['average_rating'] ?></span>
+                                <i class="fa-solid fa-star text-warning"></i>
+                                <!-- Thêm icon ở đây (Font Awesome) -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach ?>
+
+    </div>
+</div>
+<!-- End Product  -->
 <!-- Hotel -->
 <?php foreach ($getHotel as $row): ?>
     <div class="mt-5 rounded-5 container">
@@ -125,26 +156,28 @@
                             <tr>
                                 <td>
                                     <div style="width: 100%; max-width:20rem;">
-                                        <img src="./mvc/view/img/<?php echo $row['image_room'] ?>" alt="" style="width: 100%;">
+                                        <img src="./mvc/view/img/<?php echo $row['image_room'] ?>" alt=""
+                                            style="width: 100%;">
                                     </div>
                                     <div class="fs-5 my-3">
                                         <span><i class="fa-solid fa-arrows-left-right"></i></span>
                                         <span>Rộng <?php echo $row['capacity'] ?>m²</span>
                                     </div>
                                     <div class="fs-5 my-3">
-                        <span><i class="fa-solid fa-clipboard"></i></span>
-                        <span><?php echo $row['description'] ?></span>
-                    </div>
+                                        <span><i class="fa-solid fa-clipboard"></i></span>
+                                        <span><?php echo $row['description'] ?></span>
+                                    </div>
                                 </td>
                                 <td>
-                                    <i class="fa-solid fa-user"></i></td>
+                                    <i class="fa-solid fa-user"></i>
+                                </td>
                                 <td class="d-flex flex-column">
                                     <!-- <button class="btn btn-success rounded-pill">+ COUPON 11.11</button> -->
                                     <del class="text-body-secondary"><?php echo $row['price'] + 400; ?>VNĐ</del>
                                     <span class="text-danger fw-bolder fs-5"><?php echo $row['price'] ?>VNĐ</span>
                                     <span class="text-body-secondary">Chưa bao gồm thuế và phí</span>
                                     <button class="btn btn-danger rounded-pill">
-                                        <a href="./?page=roomdetails&room=<?php echo $row['id_room'] ?>"
+                                        <a href="./?page=checkout&room=<?php echo $row['id_room'] ?>"
                                             class="text-decoration-none text-light">Đặt
                                             ngay</a></button>
                                 </td>
@@ -173,36 +206,7 @@
         </div>
     </div> -->
 </div>
-<div class="container text-center mt-3">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        <?php foreach($getHotel as $row): ?>
-        <div class="col">
-            <div class="card">
-                <img src="./mvc/view/img/<?php echo $row['image_hotel'] ?>" class="card-img-top" alt="...">
-                <a class="mini"><?php echo $row['address'] ?></a>
-                <div class="card-body">
-                    <!-- Đưa tiêu đề về bên trái -->
-                    <h5 class="card-title text-start"><?php echo $row['name'] ?></h5>
 
-                    <!-- Nút và icon nằm trên cùng một dòng -->
-                    <div class="d-flex justify-content-between align-items-center">
-                        <!-- Nút bên trái -->
-                        <a href="./?page=hoteldetails&hotel=<?php echo $row['id_hotel'] ?>" class="btn btn-primary">Đặt Tour Ngay</a>
-                        <!-- Icon và rating nằm bên phải -->
-                        <a href="#" class="btn btn-link d-flex align-items-center">
-                            <span><?php echo $row['average_rating'] ?></span>
-                            <i class="fa-solid fa-star text-warning"></i>
-                            <!-- Thêm icon ở đây (Font Awesome) -->
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-<?php endforeach ?>
-       
-    </div>
-</div>
-<!-- End Product  -->
 
 <!-- Voucher  -->
 <div class="product">

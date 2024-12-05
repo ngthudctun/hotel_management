@@ -1,31 +1,3 @@
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addBooking'])) {
-
-    if (isset($_POST['id_customer'])) {
-        $data = [
-            'request' => htmlspecialchars($_POST['request'] ?? ''),
-            'start_date' => htmlspecialchars($_POST['start_date'] ?? ''),
-            'end_date' => htmlspecialchars($_POST['end_date'] ?? ''),
-            'total_price' => htmlspecialchars($_POST['total_price'] ?? ''),
-            'id_customer' => htmlspecialchars($_POST['id_customer'] ?? ''),
-            'id_room' => htmlspecialchars($_POST['id_room'] ?? ''),
-        ];
-
-        $add = new getData();
-        try {
-            $add->addBooking($data);
-            $message = 'Đặt phòng thành công';
-        } catch (Exception $e) {
-            $message = 'Đặt phòng thất bại: ' . $e->getMessage();
-        }
-    } else {
-        $message = 'Vui lòng đăng nhập trước';
-    }
-
-
-}
-?>
-
 <main class="container">
     <div class="row g-0">
         <div class="col-sm-6 col-md-8">
@@ -62,19 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addBooking'])) {
                         <div class="d-flex">
                             <div class="d-flex flex-column">
                                 <h5 class="mt-1"> <?php echo $row['type_name'] ?></h5>
-                                <div class="fw-blod ms-3 text-body-secondary"><i class="fa-solid fa-list-check"></i><span
-                                        class="ms-2">9 tháng 11 năm 2024 — 10 tháng 11 năm 2024</span></div>
-                                <div class="fw-blod ms-3 text-body-secondary"><i class="fa-solid fa-users"></i><span
-                                        class="ms-2">Khách:  2 người
-                                        lớn/phòng</span></div>
+
+
                                 <div class="fw-blod ms-3 text-body-secondary"><i class="fa-solid fa-check"></i><span
                                         class="ms-2">Thanh toán tại nơi ở</span></div>
+                                <div class="fw-blod ms-3 text-body-secondary"><i class="fa-solid fa-check"></i><span
+                                        class="ms-2">Thanh toán online</span></div>
                                 <div class="fw-blod ms-3 text-body-secondary"><i class="fa-solid fa-check"></i><span
                                         class="ms-2"><?php echo $row['review'] ?></span></div>
                             </div>
                             <div class="ms-auto d-flex flex-column">
                                 <span class="text-danger fw-bolder fs-5 text-end"><?php echo $row['price'] ?> VND</span>
                                 <span style="font-size: 10px;">Đã bao gồm thuế và phí</span>
+                                <?php if(!isset($user)){ ?>
+                                    <a href="./?page=login"><button class="btn btn-primary mt-3">Đặt ngay
+                                    </button></a>
+                                <?php } else {?>
+                                    <a href="./?page=checkout&room=<?php echo $row['id_room'] ?>"><button class="btn btn-primary mt-3">Đặt ngay
+                                    </button></a>
+                                <?php }?>
                             </div>
                         </div>
                     </div>
@@ -147,33 +125,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addBooking'])) {
         </div>
         <div class="col-6 col-md-4">
             <div class="card ms-3 position-sticky" style="top: 10px;">
-                <form action="" method="post" class="m-auto p-3" style="max-width: 30rem;">
-                    <input type="number" value="<?php echo $getRoomHotel[0]['price'] ?>" name="total_price" hidden>
-                    <input type="number" value="<?php echo $_GET['room'] ?>" name="id_room" hidden>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <input type="number" value="<?php echo $_SESSION['user_id'] ?>" name="id_customer" hidden>
-                    <?php endif ?>
-                    <div class="mb-3">
-                        <label for="startdate">Ngày nhận phòng</label>
-                        <input type="date" class="form-control" name="start_date" required>
+                <div class="card-body">
+                    <div class="d-flex">
+                        <span class="fs-5 fw-bold">Tổng giá</span>
+                        <span
+                            class="text-danger fw-bolder fs-5 text-end ms-auto">
+                            <?php echo $getRoomHotel[0]['price'] ?> VND</span>
                     </div>
-                    <div class="mb-3">
-                        <label for="enddate">Ngày trả phòng</label>
-                        <input type="date" class="form-control" name="end_date" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="request" class="form-label">Yêu cầu</label>
-                        <input type="text" class="form-control" name="request" id="request" aria-describedby="request">
-                        <div id="request" class="form-text">có thể để trống</div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" name="addBooking">Đặt ngay</button>
-                    <div class="mb-3"> <?php if (isset($message))
-                        echo $message; ?></div>
-
-                </form>
+                    <div style="font-size: 10px;">Đã bao gồm thuế và phí</div>
+                    <a href="#"><button class="btn btn-primary w-100 mt-3">Đặt ngay
+                        </button></a>
+                </div>
             </div>
         </div>
     </div>
-
 </main>

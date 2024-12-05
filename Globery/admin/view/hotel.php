@@ -14,6 +14,10 @@ try {
 }
 
 
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'sua') {
+$editing_id = $_POST['id_hotel'] ?? null;
+// }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
     $hotels = $admin_db->search('hotel', $_POST['searchName']);
 } else {
@@ -30,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
             }
 
             $stmt = $pdo->prepare("INSERT INTO hotel (name, image_hotel, tel, email, address, average_rating, total_room, review, description) 
-                               VALUES (:name, :image_hotel, :tel, :email, :address, :average_rating, :total_room, :review, :description)");
+                            VALUES (:name, :image_hotel, :tel, :email, :address, :average_rating, :total_room, :review, :description)");
             $stmt->execute([
                 ':name' => $_POST['name'],
                 ':image_hotel' => $image_name ?: 'default_image.jpg', // Nếu không có hình ảnh, dùng hình ảnh mặc định
@@ -69,14 +73,28 @@ WHERE id_hotel = :id_hotel");
             // Xóa khách sạn
             $stmt = $pdo->prepare("DELETE FROM hotel WHERE id_hotel = :id_hotel");
             $stmt->execute([':id_hotel' => $_POST['id_hotel']]);
+        } elseif ($action === 'sua') {
+            $editing_id = $_POST['id_hotel'] ?? null;
         }
-
-        // header("Location: ./index.php?page=hotel");
-        exit;
+        if ($action !== 'sua') {
+            header("Location: ./index.php?page=hotel");
+            exit();
+        }
     }
 
     // Lấy danh sách khách sạn
-    $stmt = $pdo->query("SELECT id_hotel, name, image_hotel, tel, email, address FROM hotel");
+    $stmt = $pdo->query("SELECT 
+    hotel.*,
+    COUNT(room.id_room) AS total_room
+FROM 
+    hotel
+LEFT JOIN 
+    room
+ON 
+    hotel.id_hotel = room.id_hotel
+GROUP BY 
+    hotel.id_hotel, hotel.name;");
+
     $hotels = $stmt->fetchAll();
 }
 ?>
@@ -85,19 +103,14 @@ WHERE id_hotel = :id_hotel");
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-3">
     <div
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Danh sách sản phẩm</h1>
+        <h1 class="h2">Danh sách khách sạn</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <button id="btn-toggle" type="button" class="btn btn-primary" onclick="toggleForm();">Thêm Khách
                 Sạn</button>
         </div>
     </div>
-    <form action="./?page=hotel" method="post" class="mb-3">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" name="searchName" placeholder="Nhập tên người dùng">
-            <button class="btn btn-outline-secondary" type="submit" name="search">Tìm kiếm</button>
-        </div>
-    </form>
-    <form id="addHotel" hidden action="" method="post" enctype="multipart/form-data">
+
+    <form id="addHotel" hidden action="./?page=hotel" method="post" enctype="multipart/form-data">
         <input class="form-control" type="hidden" name="id_hotel" value="">
         <div>
             <label for="name">Tên khách sạn:</label>
@@ -137,6 +150,14 @@ WHERE id_hotel = :id_hotel");
         </div>
         <button class="btn btn-primary mt-3" type="submit" name="action" value="add">Thêm</button>
     </form>
+
+    <form action="./?page=hotel" method="post" class="mb-3">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="searchName" placeholder="Nhập tên khách sạn">
+            <button class="btn btn-outline-secondary border border-secondary-subtle" type="submit" name="search">Tìm
+                kiếm</button>
+        </div>
+    </form>
     <div class="table-responsive">
         <table class="table table-striped table-sm">
             <thead class="table-dark">
@@ -147,62 +168,89 @@ WHERE id_hotel = :id_hotel");
                     <th>Số điện thoại</th>
                     <th>Email</th>
                     <th>Địa chỉ</th>
+                    <th>Mô tả</th>
+                    <th>Đánh giá trung bình</th>
+                    <th>Tổng phòng</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $i = 1;
                 foreach ($hotels as $hotel): ?>
-                        <?php if (!isset($_POST['sua'])) { ?>
-                            <td><?php echo $i++; ?></td>
-                            <td><?= htmlspecialchars($hotel['name']) ?></td>
-                            <td><img src="./../mvc/view/img/<?= htmlspecialchars($hotel['image_hotel']) ?>" alt="Hình ảnh"
-                                    width="100">
-                            </td>
-                            <td><?= htmlspecialchars($hotel['tel']) ?></td>
-                            <td><?= htmlspecialchars($hotel['email']) ?></td>
-                            <td><?= htmlspecialchars($hotel['address']) ?></td>
-                            <td>
-                                <form method="post" action="" style="display:inline;">
-                                    <input type="hidden" name="id_hotel" value="<?= $hotel['id_hotel'] ?>">
-                                    <input type="hidden" name="old_image" value="<?= $hotel['image_hotel'] ?>">
-                                    <button class="btn btn-sm btn-warning" type="submit" name="sua" value="sua">Sửa</button>
-                                </form>
-                                <form action="" method="post" style="display:inline;">
-                                    <input type="hidden" name="id_hotel" value="<?= $hotel['id_hotel'] ?>">
-                                    <button class="btn btn-sm btn-danger" type="submit" name="action" value="delete"
-                                        onclick="return confirm('Xác nhận xóa?')">Xóa</button>
-                                </form>
-                            </td>
-                        <?php } else { ?>
-                            <form action="./?page=hotel" method="post" enctype="multipart/form-data" style="display:inline;">
-                                <td class="mt-3"><?= htmlspecialchars($hotel['id_hotel']) ?></td>
+                    <?php if ($editing_id == $hotel['id_hotel']): ?>
+                        <form action="./?page=hotel" method="post" enctype="multipart/form-data">
+                            <tr>
+                                <td><?= htmlspecialchars($hotel['id_hotel']) ?></td>
                                 <td>
                                     <input type="text" class="form-control" name="name"
                                         value="<?= htmlspecialchars($hotel['name']) ?>">
                                 </td>
-                                <td><input type="file" class="form-control" name="image_hotel">
+                                <td>
+                                    <input type="file" class="form-control" name="image_hotel">
                                 </td>
                                 <td>
                                     <input type="text" class="form-control" name="tel"
                                         value="<?= htmlspecialchars($hotel['tel']) ?>">
                                 </td>
-                                <td><input type="email" class="form-control" name="email"
-                                        value="<?= htmlspecialchars($hotel['email']) ?>"></td>
-                                <td><input type="text" class="form-control" name="address"
-                                        value="<?= htmlspecialchars($hotel['address']) ?>"></td>
                                 <td>
-
-                                    <input type="hidden" name="id_hotel" value="<?= $hotel['id_hotel'] ?>">
-                                    <input type="hidden" name="old_image" value="<?= $hotel['image_hotel'] ?>">
-                                    <button type="submit" class="btn btn-sm btn-warning" value="edit" name="action">Lưu</button>
-                                    <button class="btn btn-sm btn-danger" disabled type="submit" name="action"
-                                        value="">Hủy</button>
+                                    <input type="email" class="form-control" name="email"
+                                        value="<?= htmlspecialchars($hotel['email']) ?>">
                                 </td>
-                            </form>
-                        <?php } ?>
+                                <td>
+                                    <input type="text" class="form-control" name="address"
+                                        value="<?= htmlspecialchars($hotel['address']) ?>">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="description"
+                                        value="<?= htmlspecialchars($hotel['description']) ?>">
+                                </td>
+                                <td>
+                                    <input disabled type="text" class="form-control" name="average_rating"
+                                        value="<?= htmlspecialchars($hotel['average_rating']) ?>">
+                                </td>
+                                <td>
+                                    <input disabled type="text" class="form-control" name="total_room"
+                                        value="<?= htmlspecialchars($hotel['total_room']) ?>">
+                                </td>
+                                <td>
+                                    <input type="hidden" name="id_hotel" value="<?= $hotel['id_hotel'] ?>">
+                                    <input type="hidden" name="average_rating" value="<?= $hotel['average_rating'] ?>">
+                                    <input type="hidden" name="total_room" value="<?= $hotel['total_room'] ?>">
+                                    <input type="hidden" name="review" value="<?= $hotel['review'] ?>">
+                                    <input type="hidden" name="old_image" value="<?= $hotel['image_hotel'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-warning" name="action" value="edit">Lưu</button>
+                                    <a href="./?page=hotel" class="btn btn-sm btn-danger">Hủy</a>
+                                </td>
+                            </tr>
+                        </form>
+                    <?php else: ?>
+                        <tr>
+                            <td><?= htmlspecialchars($hotel['id_hotel']) ?></td>
+                            <td><?= htmlspecialchars($hotel['name']) ?></td>
+                            <td><img src="./../mvc/view/img/<?= htmlspecialchars($hotel['image_hotel']) ?>" alt="Hình ảnh"
+                                    width="100"></td>
+                            <td><?= htmlspecialchars($hotel['tel']) ?></td>
+                            <td><?= htmlspecialchars($hotel['email']) ?></td>
+                            <td><?= htmlspecialchars($hotel['address']) ?></td>
+                            <td><?= htmlspecialchars($hotel['description']) ?></td>
+                            <td><?= htmlspecialchars($hotel['average_rating']) ?></td>
+                            <td><?= htmlspecialchars($hotel['total_room']) ?>
+                            </td>
+                            <td>
+                                <form method="post" action="./?page=hotel" style="display:inline;">
+                                    <input type="hidden" name="id_hotel" value="<?= $hotel['id_hotel'] ?>">
+                                    <button class="btn btn-sm btn-warning" type="submit" name="action" value="sua">Sửa</button>
+                                </form>
+                                <form action="./?page=hotel" method="post" style="display:inline;">
+                                    <input type="hidden" name="id_hotel" value="<?= $hotel['id_hotel'] ?>">
+                                    <button class="btn btn-sm btn-danger" type="submit" name="action" value="delete"
+                                        onclick="return confirm('Xác nhận xóa?')">Xóa</button>
+                                </form>
+                            </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
             </tbody>
         </table>
     </div>
